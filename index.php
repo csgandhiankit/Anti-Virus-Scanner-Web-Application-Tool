@@ -8,6 +8,7 @@ include_once 'dbconnect.php';
 	<title>Home | CS147 Project</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" >
 	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+
 </head>
 <body>
 
@@ -20,12 +21,12 @@ include_once 'dbconnect.php';
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="index.php">Anti-Virus Scanner</a>
+			<a class="navbar-brand" href="index.php">Anti-Virus File Scanner</a>
 		</div>
 		<div class="collapse navbar-collapse" id="navbar1">
 			<ul class="nav navbar-nav navbar-right">
 				<?php if (isset($_SESSION['usr_id'])) { ?>
-				<li><p class="navbar-text">Signed in as <?php echo $_SESSION['usr_name']; ?></p></li>
+				<li><p class="navbar-text">Welcome, <?php echo $_SESSION['usr_name']; ?></p></li>
 				<li><a href="logout.php">Log Out</a></li>
 				<?php } else { ?>
 				<li><a href="login.php">Login</a></li>
@@ -36,6 +37,19 @@ include_once 'dbconnect.php';
 	</div>
 </nav>
 
+	<div>
+		<div class="container">
+  			<div class="jumbotron">
+    			<h1>Anti-Virus File Scanner!!</h1>      
+    			<p>Allows the users to upload any file to check if it contains a malicious content.</p>
+    				
+  						<ul class="pager">
+    					<li><a href="login.php">Login</a></li>
+    					<li><a href="register.php">Sign Up</a></li>
+  						</ul>
+  			</div>    
+		</div>
+	</div>
 <script src="js/jquery-1.10.2.js"></script>
 <script src="js/bootstrap.min.js"></script>
 </body>

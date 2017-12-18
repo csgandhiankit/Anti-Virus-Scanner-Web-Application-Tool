@@ -2,7 +2,7 @@
 session_start();
 
 if(isset($_SESSION['usr_id'])!="") {
-	header("Location: index.php");
+	header("Location: loginController.php");
 }
 
 include_once 'dbconnect.php';
@@ -10,14 +10,38 @@ include_once 'dbconnect.php';
 //check if form is submitted
 if (isset($_POST['login'])) {
 
-	$email = mysqli_real_escape_string($con, $_POST['email']);
+	$uname = mysqli_real_escape_string($con, $_POST['username']);
 	$password = mysqli_real_escape_string($con, $_POST['password']);
-	$result = mysqli_query($con, "SELECT * FROM users WHERE email = '" . $email. "' and password = '" . md5($password) . "'");
+
+
+	$contributor = 0;
+	if(isset($_POST['contributor'])){
+	$contributor = mysqli_real_escape_string($con, $_POST['contributor']);
+	}
+	if($contributor === 'contributor'){
+		$contributor = 1;
+	}else{
+		$contributor = 0;
+	}
+
+
+	$admin = 0;
+	if(isset($_POST['admin'])){
+	$admin = mysqli_real_escape_string($con, $_POST['admin']);
+	}
+	if($admin === 'admin'){
+		$admin = 1;
+	}else{
+		$admin = 0;
+	}
+	$result = mysqli_query($con, "SELECT * FROM users WHERE username = '" . $uname. "' and password = '" . md5($password) . "' and admin=".$admin." and contributor=".$contributor);
 
 	if ($row = mysqli_fetch_array($result)) {
 		$_SESSION['usr_id'] = $row['id'];
-		$_SESSION['usr_name'] = $row['name'];
-		header("Location: index.php");
+		$_SESSION['usr_name'] = $row['firstname'];
+		$_SESSION['admin'] = $row['admin'];
+		$_SESSION['contributor'] = $row['contributor'];
+		header("Location: loginController.php");
 	} else {
 		$errormsg = "Incorrect Email or Password!!!";
 	}
@@ -63,13 +87,17 @@ if (isset($_POST['login'])) {
 					<legend>Login</legend>
 					
 					<div class="form-group">
-						<label for="name">Email</label>
-						<input type="text" name="email" placeholder="Your Email" required class="form-control" />
+						<label for="name">Username</label>
+						<input type="text" name="username" placeholder="Username" required class="form-control" />
 					</div>
 
 					<div class="form-group">
 						<label for="name">Password</label>
 						<input type="password" name="password" placeholder="Your Password" required class="form-control" />
+					</div>
+					<div>
+					<label class="checkbox-inline"><input type="checkbox" name="admin" value="admin">Admin</label>
+					<label class="checkbox-inline"><input type="checkbox" name="contributor" value="contributor">Contributor</label>
 					</div>
 
 					<div class="form-group">

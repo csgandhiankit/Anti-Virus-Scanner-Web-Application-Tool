@@ -12,15 +12,45 @@ $error = false;
 
 //check if form is submitted
 if (isset($_POST['signup'])) {
-	$name = mysqli_real_escape_string($con, $_POST['name']);
+	$fname = mysqli_real_escape_string($con, $_POST['firstname']);
+	$lname = mysqli_real_escape_string($con, $_POST['lastname']);
+	$uname = mysqli_real_escape_string($con, $_POST['username']);
 	$email = mysqli_real_escape_string($con, $_POST['email']);
 	$password = mysqli_real_escape_string($con, $_POST['password']);
 	$cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
+
+	$contributor = 0;
+	if(isset($_POST['contributor'])){
+	$contributor = mysqli_real_escape_string($con, $_POST['contributor']);
+	}
+	if($contributor === 'contributor'){
+		$contributor = 1;
+	}else{
+		$contributor = 0;
+	}
+
+	$admin = 0;
+	if(isset($_POST['admin'])){
+	$admin = mysqli_real_escape_string($con, $_POST['admin']);
+	}
+	if($admin === 'admin'){
+		$admin = 1;
+	}else{
+		$admin = 0;
+	}
 	
 	//name can contain only alpha characters and space
-	if (!preg_match("/^[a-zA-Z ]+$/",$name)) {
+	if (!preg_match("/^[a-zA-Z ]+$/",$fname)) {
 		$error = true;
 		$name_error = "Name must contain only alphabets and space";
+	}
+	if (!preg_match("/^[a-zA-Z ]+$/",$lname)) {
+		$error = true;
+		$name_error = "Name must contain only alphabets and space";
+	}
+	if (!preg_match("/^[a-zA-Z_-]+$/",$uname)) {
+		$error = true;
+		$name_error = "Invalid Username: can only contain alphabets, numbers, -,or _";
 	}
 	if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
 		$error = true;
@@ -35,10 +65,11 @@ if (isset($_POST['signup'])) {
 		$cpassword_error = "Password and Confirm Password doesn't match";
 	}
 	if (!$error) {
-		if(mysqli_query($con, "INSERT INTO users(name,email,password) VALUES('" . $name . "', '" . $email . "', '" . md5($password) . "')")) {
+		if(mysqli_query($con, "INSERT INTO users(`firstname`, `lastname`, `admin`, `contributor`, `username`, `email`, `password`) VALUES('".$fname."', '".$lname."', '".$admin."', '".$contributor."', '".$uname."', '".$email."', '".md5($password)."')")) {
 			$successmsg = "Successfully Registered! <a href='login.php'>Click here to Login</a>";
 		} else {
 			$errormsg = "Error in registering...Please try again later!";
+			echo mysqli_error($con);
 		}
 	}
 }
@@ -83,8 +114,18 @@ if (isset($_POST['signup'])) {
 					<legend>Sign Up</legend>
 
 					<div class="form-group">
-						<label for="name">Name</label>
-						<input type="text" name="name" placeholder="Enter Full Name" required value="<?php if($error) echo $name; ?>" class="form-control" />
+						<label for="name">First Name</label>
+						<input type="text" name="firstname" placeholder="First Name" required value="<?php if($error) echo $fname; ?>" class="form-control" />
+						<span class="text-danger"><?php if (isset($name_error)) echo $name_error; ?></span>
+						<label for="name">Last Name</label>
+						<input type="text" name="lastname" placeholder="Last Name" required value="<?php if($error) echo $lname; ?>" class="form-control" />
+						<span class="text-danger"><?php if (isset($name_error)) echo $name_error; ?></span>
+						
+					</div>
+
+					<div class="form-group">
+						<label for="name">Username</label>
+						<input type="text" name="username" placeholder="username" required value="<?php if($error) echo $lname; ?>" class="form-control" />
 						<span class="text-danger"><?php if (isset($name_error)) echo $name_error; ?></span>
 					</div>
 					
@@ -105,6 +146,12 @@ if (isset($_POST['signup'])) {
 						<input type="password" name="cpassword" placeholder="Confirm Password" required class="form-control" />
 						<span class="text-danger"><?php if (isset($cpassword_error)) echo $cpassword_error; ?></span>
 					</div>
+					<div>
+					<label class="checkbox-inline"><input type="checkbox" name="admin" value="admin">Admin</label>
+				
+					<label class="checkbox-inline"><input type="checkbox" name="contributor" value="contributor">Contributor</label>
+					</div>
+
 
 					<div class="form-group">
 						<input type="submit" name="signup" value="Sign Up" class="btn btn-primary" />
