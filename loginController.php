@@ -21,14 +21,10 @@ include_once 'dbconnect.php';
 			insertSignature($sign, $GLOBALS['con']);
 		}
 
-
-
-
 		if($admin == 1){
 			getPendingSignatureRequests();
 		}
 
-		
 
 		function getPendingSignatureRequests(){
 		
@@ -104,15 +100,8 @@ include_once 'dbconnect.php';
 
 
 				//takes in whole file and scans for signature
-				function scanFile($file, $con){
-					$fileContents = "";
-						if($file){
-							        while(!feof($file))
-							        {
-							            $line = fgets($file);
-							            $fileContents .= $line;
-							        }
-							    }
+				function scanFile($fileContents, $con){
+					
 					//echo $fileContents;
 
 					$q = "SELECT `signature` FROM malware";
@@ -129,7 +118,7 @@ include_once 'dbconnect.php';
 					    $GLOBALS['fileSubmitted'] = true;
 						}
 				    }
-				
+				    $GLOBALS['fileSubmitted'] = true;
 				     
 
 				} else {
@@ -158,6 +147,14 @@ include_once 'dbconnect.php';
 			        	// error message if the file could not be open
 						$file = fopen($fileName,"r") or (exit("Unable to open file!") and $fileUploadFailed = true);
 
+						$fileContents = "";
+						if($file){
+							        while(!feof($file))
+							        {
+							            $line = fgets($file);
+							            $fileContents .= $line;
+							        }
+							    }
 
 						//$handle = fopen($filename, "r");
 						$contents = fread($file, $bytesToRead);
@@ -168,7 +165,8 @@ include_once 'dbconnect.php';
 						}else if($contributor == 1){
 							insertSignatureContributor(trim($contents), $con);
 						}else{
-							scanFile($file, $con);
+							scanFile($fileContents, $con);
+
 						}
 
 							   
@@ -314,11 +312,9 @@ include_once 'dbconnect.php';
 		echo "</tbody>";
 		echo "</table>";
 	}
-		?>
-
+	?>
 
 	</div>
-
 	
 
 <script src="js/jquery-1.10.2.js"></script>
