@@ -3,12 +3,7 @@
 ---
 ---
 
-Contributors:
-1. Ankit Gandhi
-
-2. Sandeep Samra
-
-3. Daksha 
+Contributors: Ankit Gandhi
 
 
 ##Build a website that:
